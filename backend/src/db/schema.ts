@@ -18,20 +18,20 @@ export const users = pgTable("users",{
     updatedAt: timestamp("updated_at", {withTimezone:true}).defaultNow().notNull(),
 })
 
-export const products = pgTable("products",{
-    id: uuid("id").defaultRandom().primaryKey(),
-    slug: text("slug").notNull().unique(),/**Nike=>nike-shoe */
-    name: text("name").notNull(),
-    category: text("category").notNull().default("General"),
-    description: text("description").notNull().default(""),
-    priceCents: text("price_cents").notNull(),
-    currency: text("currency").notNull().default("zar"),
-    imageKitFileId: text("image"),
-    active: boolean("active").notNull().default(true),
-    
-    createdAt: timestamp("created_at", {withTimezone:true}).defaultNow().notNull(),    
-
-})
+export const products = pgTable("products", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  slug: text("slug").notNull().unique(),
+  name: text("name").notNull(),
+  category: text("category").notNull().default("General"),
+  description: text("description").notNull().default(""),
+  priceCents: integer("price_cents").notNull(),
+  currency: text("currency").notNull().default("usd"),
+  imageUrl: text("image_url"),
+  /** ImageKit `fileId` for deletes */
+  imageKitFileId: text("image_kit_file_id"),
+  active: boolean("active").notNull().default(true),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
 export const CheckoutSessions = pgTable("checkout_sessions",{
    id: uuid("id").defaultRandom().primaryKey(),
    userId: uuid("user_id")

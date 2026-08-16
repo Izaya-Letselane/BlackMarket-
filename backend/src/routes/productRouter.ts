@@ -1,5 +1,8 @@
 import { Router } from "express";
+import { getCategories, getProductBySlug, listProducts } from "../controllers/productController.js";
 
 const router = Router()
-router.get("/", lisPo)
+router.get("/", listProducts)
+router.get("/categories",getCategories)
+router.get("/:slug", getProductBySlug)
 export default router
