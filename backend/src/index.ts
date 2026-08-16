@@ -11,6 +11,7 @@ import meRouter from './routes/meRouter.js'
 import productRouter from './routes/productRouter.js'
 import streamRouter from './routes/streamRouter.js'
 import checkoutRouter from './routes/checkoutRouter.js'
+import { polarWebhookHandler } from "./webhooks/polar.js";
 
 
 
@@ -22,6 +23,10 @@ const rawJson = express.raw({type:"application/json", limit:"1mb"})
 //it is important that you don't parse the webhook event data. it should be in raw format
 app.post("/webhooks/clerk", rawJson,(req,res)=>{//get rwa json
     void clerkWebhookHandler(req, res)
+})
+
+app.post("/webhooks/polar", rawJson,(req,res)=>{
+    void polarWebhookHandler(req, res)
 })
 
 app.use(express.json())
