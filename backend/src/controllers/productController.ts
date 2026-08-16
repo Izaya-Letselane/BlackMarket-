@@ -30,7 +30,7 @@ export async function listProducts(
 }
 
 export async function getCategories(
-  req: Request,
+  _req: Request,
   res: Response,
   next: NextFunction,
 ) {
