@@ -7,7 +7,9 @@ import "dotenv/config"
 import fs from "node:fs"
 import path from "node:path";
 import keepAliveCron from './lib/cron.js'
-
+import meRouter from './routes/meRouter.js'
+import productRouter from './routes/productRouter.js'
+import streamRouter from './routes/streamRouter.js'
 const env =getEnv()
 const app = express()
 const rawJson = express.raw({type:"application/json", limit:"1mb"})
@@ -23,6 +25,11 @@ app.use(clerkMiddleware())
 app.get("/health",(_req,res)=>{
     res.json({ok:true})
 })
+
+app.use("/api/me", meRouter)
+app.use("/api/products", productRouter)
+app.use("/api/stream", streamRouter)
+
 const publicDir = path.join(process.cwd(),"public")
 if (fs.existsSync(publicDir)) {
   app.use(express.static(publicDir));
