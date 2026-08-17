@@ -12,6 +12,8 @@ import productRouter from './routes/productRouter.js'
 import streamRouter from './routes/streamRouter.js'
 import checkoutRouter from './routes/checkoutRouter.js'
 import { polarWebhookHandler } from "./webhooks/polar.js";
+import * as Sentry from '@sentry/node';
+import { sentryClerkUserMiddleware } from "./middleware/sentryClerkUser.js";
 
 
 
@@ -32,6 +34,8 @@ app.post("/webhooks/polar", rawJson,(req,res)=>{
 app.use(express.json())
 app.use(cors())
 app.use(clerkMiddleware())
+app.use(sentryClerkUserMiddleware)
+
 app.get("/health",(_req,res)=>{
     res.json({ok:true})
 })
@@ -41,6 +45,15 @@ app.use("/api/products", productRouter)
 app.use("/api/stream", streamRouter)
 app.use("/api/checkout", checkoutRouter)
 
+//sentry will be attached to the response object
+Sentry.setupExpressErrorHandler(app);
+
+
+//error handler middleware
+app.use((_error:unknown, _req: express.Request,res: express.Response,_next: express.NextFunction)=>{
+  const sentryId = (res as express.Response & {sentry?:string}).sentry
+  res.status(500).json({error: "Internal server error",...(sentryId !==undefined && {sentryId})})
+})
 const publicDir = path.join(process.cwd(),"public")
 if (fs.existsSync(publicDir)) {
   app.use(express.static(publicDir));
