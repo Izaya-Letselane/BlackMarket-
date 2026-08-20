@@ -1,21 +1,27 @@
 
-import './App.css'
-import { Show, SignInButton, SignUpButton, UserButton } from '@clerk/react'
+import PageLoader from './components/PageLoader'
+import Layout from './components/Layout'
+import { Navigate, Route, Routes } from 'react-router'
+import HomePage from './pages/HomePage'
+import { useAuth } from '@clerk/react'
+import CartPage from './pages/CartPage'
+import OrdersPage from './pages/OrdersPage'
+import CheckoutReturnPage from './pages/CheckoutReturnPage'
+
 function App() {
 
+  const {isLoaded, isSignedIn}=useAuth()
+  if(!isLoaded) return <PageLoader/>
 
   return (
-    <>
-      <header>
-        <Show when="signed-out">
-          <SignInButton mode='modal'/>
-          <SignUpButton mode='modal'/>
-        </Show>
-        <Show when="signed-in">
-          <UserButton />
-        </Show>
-      </header>
-    </>
+    <Layout>
+      <Routes>
+        <Route path='/' element={<HomePage/>}/>
+         <Route path='/cart' element={<CartPage/>}/>
+         <Route path='/orders' element={isSignedIn? <OrdersPage/>:<Navigate to={"/"} replace/>}/>
+         <Route path='/checkout/return' element={<CheckoutReturnPage/>}/>
+      </Routes>
+    </Layout>
   )
 }
 
